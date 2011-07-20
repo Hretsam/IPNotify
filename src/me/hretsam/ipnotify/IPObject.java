@@ -50,8 +50,7 @@ public class IPObject {
      * @return 
      */
     public String getDateString() {
-        String pattern = IPNotify.getPlugin().getConfig().getDateSyntax();
-        DateFormat dateFormat = new SimpleDateFormat(pattern);
+        DateFormat dateFormat = new SimpleDateFormat(IPNotify.getPlugin().getConfig().getDateSyntax());
         return dateFormat.format(date);
     }
 

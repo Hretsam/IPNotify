@@ -19,6 +19,8 @@ self node: IPNotify.self
 other node: IPNotify.other
 ## Node to get the warning messages
 warning node: IPNotify.warning
+## Node to use the aipban command
+aipban node: IPNotfiy.aipban
 
 ## This is the maximum size of the iplist (for command /iplist)
 max iplist size: 6

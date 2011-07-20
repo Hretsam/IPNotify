@@ -19,12 +19,18 @@ public class CommandAIpBan implements IPCommand {
         // Checks if the sender is a player, so it will filter out colours for the server console
         boolean useColour = (sender instanceof Player);
 
+        if (!parent.getPermissions().hasPermission(sender, parent.getConfig().getAipbannode())) {
+            sender.sendMessage("You don't have Permission to do that");
+            return;
+        }
+
         // Check arguments length
         if (args.length == 1 || args.length == 2) {
             boolean banRelated = false;
             if (args.length == 2) {
                 banRelated = true;
             }
+
 
             String ip = "";
 

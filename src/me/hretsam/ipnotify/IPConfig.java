@@ -17,6 +17,7 @@ public class IPConfig {
     private String selfnode;
     private String othernode;
     private String warningnode;
+    private String aipbannode;
     private String dateSyntax;
     private boolean warnOnFirstJoin;
     private int maxIpListSize;
@@ -73,6 +74,7 @@ public class IPConfig {
         selfnode = config.getString("self node", "IPNotify.self");
         othernode = config.getString("other node", "IPNotify.other");
         warningnode = config.getString("warning node", "IPNotify.warning");
+        aipbannode = config.getString("aipbannode", "IPNotify.aipban");
 
         warnOnFirstJoin = config.getBoolean("warn on first join", true);
 
@@ -106,5 +108,9 @@ public class IPConfig {
 
     public int getMaxIpListSize() {
         return maxIpListSize;
+    }
+
+    public String getAipbannode() {
+        return aipbannode;
     }
 }
