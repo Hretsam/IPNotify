@@ -1,21 +1,19 @@
-package me.hretsam.ipnotify;
+package me.hretsam.ipnotify.data;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import org.bukkit.craftbukkit.CraftServer;
+import me.hretsam.ipnotify.IPNotify;
+import me.hretsam.ipnotify.IPObject;
 import org.bukkit.util.config.Configuration;
 
 /**
  *
  * @author Hretsam
  */
-public class FileHandler {
+public class FlatFileHandler extends DataHandler {
 
     /** Filename of the playerlog */
     private static final String filename = "players.yml";
@@ -23,7 +21,8 @@ public class FileHandler {
     private Configuration userlog;
     private static IIPComparator comparator;
 
-    public FileHandler(File datafolder) throws IOException {
+    public FlatFileHandler(IPNotify plugin, File datafolder) throws IOException {
+        super(plugin);
         // Checks if directory already exists
         if (!datafolder.exists()) {
             // makes directory
@@ -51,7 +50,8 @@ public class FileHandler {
      * @param ip
      * @param datelong 
      */
-    public void addIp(String username, String ip, long datelong) {
+    @Override
+    public void addIp(String username, String ip, long datelong) throws DataException {
         ip = formatIP(ip);
 
         // Makes sure it wont mistake the ip for nodes in the yml file
@@ -76,7 +76,8 @@ public class FileHandler {
      * @param forceCaseCheck (use this when your not sure the casing is right)
      * @return 
      */
-    public ArrayList<IPObject> getUserIplist(String username, int maxSize) {
+    @Override
+    public List<IPObject> getUserIplist(String username, int maxSize) throws DataException {
         // Get all ip's
         List<String> keys = userlog.getKeys("users." + username + ".ip");
         // Check if there are ip's
@@ -101,7 +102,8 @@ public class FileHandler {
      * @param username
      * @return 
      */
-    public ArrayList<String> getIpUserList(String ip) {
+    @Override
+    public List<String> getIpUserList(String ip) throws DataException {
         // Extra IP cleaning check
         ip = formatIP(ip);
         // Makes sure it wont mistake the ip for nodes in the yml file
@@ -116,6 +118,7 @@ public class FileHandler {
         // Create the return list
         ArrayList<String> usernamelist = new ArrayList<String>();
 
+        int endindex = 0;
         // Loops trough all logged users
         for (String username : keys) {
             // Gets the ips logged for the current user
@@ -125,32 +128,16 @@ public class FileHandler {
                 continue;
             }
             // Check if the ip is in the list
-            if (ipList.contains(ip)) {
-                // Add to the list
-                usernamelist.add(username);
+            for (String ipListip : ipList) {
+                endindex = Math.min(ipListip.length(), ip.length());
+                if (ipListip.substring(0, endindex).equalsIgnoreCase(ip.substring(0, endindex))) {
+                    // Add to the list
+                    usernamelist.add(username);
+                }
             }
         }
         // Return the list
         return usernamelist;
-    }
-
-    /**
-     * Formats the ip address to remove the slash and port
-     * @param ip
-     * @return ip itself
-     */
-    public static String formatIP(String ip) {
-        // Remove the slash at the start
-        if (ip.contains("/")) {
-            // Remove the slash
-            ip = ip.substring(1);
-        }
-        // Check if the ip still contains the port
-        if (ip.contains(":")) {
-            // Remove the port
-            ip = ip.split(":")[0];
-        }
-        return ip;
     }
 
     /**
@@ -159,7 +146,8 @@ public class FileHandler {
      * @param username
      * @return 
      */
-    public String checkCaseIndependant(String username) {
+    @Override
+    public String checkCaseIndependant(String username) throws DataException {
         // Get all ip's
         List<String> keys = userlog.getKeys("users");
         // Check if there are ip's
@@ -180,7 +168,8 @@ public class FileHandler {
      * @param username
      * @return 
      */
-    public boolean isUserAlreadyLogged(String username) {
+    @Override
+    public boolean isUserAlreadyLogged(String username) throws DataException {
         // Get all ip's
         List<String> keys = userlog.getKeys("users");
 
@@ -196,7 +185,8 @@ public class FileHandler {
      * Gets a list of players who's used an IP that is banned directly or indirectly (usernames)
      * @return 
      */
-    public List<String> getIndirectlyBannedUserList() {
+    @Override
+    public List<String> getIndirectlyBannedUserList() throws DataException {
 
         // Get IP list
         List<String> bannedIps = getMCBannedIpsList();
@@ -242,80 +232,47 @@ public class FileHandler {
         return namesWithBannedIpUsage;
     }
 
-    /**
-     * This returns a list with all ips that are in the banned-ips.txt
-     * It uses the reader as its in the ServerConfigurationManager
-     * @return 
-     */
-    private List<String> getMCBannedIpsList() {
-        // Make a list
-        List<String> bannedIps = new ArrayList<String>();
-        try {
-            //Open reader and get the file (from a mc method)
-            BufferedReader bufferedreader = new BufferedReader(
-                    new FileReader(((CraftServer) IPNotify.getPlugin().getServer()).getHandle().server.a("banned-ips.txt")));
-            // Init input string
-            String s = "";
-            // Reader
-            while ((s = bufferedreader.readLine()) != null) {
-                // Add line to list
-                bannedIps.add(s.trim().toLowerCase());
-            }
-            // Close reader
-            bufferedreader.close();
-        } catch (Exception exception) {
-            IPNotify.writelog("Failed to load ip ban list: " + exception, true);
-        }
-        return bannedIps;
-    }
-
-    /**
-     * This returns a list with all names that are in the banned-player.txt
-     * It uses the reader as its in the ServerConfigurationManager
-     * @return 
-     */
-    private List<String> getMCBannedNamesList() {
-        // Make a list
-        List<String> bannedNames = new ArrayList<String>();
-        try {
-            //Open reader and get the file (from a mc method)
-            BufferedReader bufferedreader = new BufferedReader(
-                    new FileReader(((CraftServer) IPNotify.getPlugin().getServer()).getHandle().server.a("banned-players.txt")));
-            // Init input string
-            String s = "";
-            // Reader
-            while ((s = bufferedreader.readLine()) != null) {
-                // Add line to list
-                bannedNames.add(s.trim().toLowerCase());
-            }
-            // Close reader
-            bufferedreader.close();
-        } catch (Exception exception) {
-            IPNotify.writelog("Failed to load ban list: " + exception, true);
-        }
-        // Return
-        return bannedNames;
-    }
-}
-
-/**
- * Comparator for the IIP class
- * @author Hretsam
- */
-class IIPComparator implements Comparator<IPObject> {
-
-    /**
-     * Compares 2 IPP objects on their date, to see which one is more recent
-     * @param o1
-     * @param o2
-     * @return 
-     */
     @Override
-    public int compare(IPObject o1, IPObject o2) {
-        if (o1.getDateLong() < o2.getDateLong()) {
-            return 1;
-        } else {
-            return 0;
+    public void shutdown() throws DataException {
+        // Do nothing
+    }
+
+    @Override
+    public String getLastUsedUsername(String ip) throws DataException {
+        // Extra IP cleaning check
+        ip = formatIP(ip);
+        // Makes sure it wont mistake the ip for nodes in the yml file
+        ip = ip.replaceAll("\\.", "_");
+
+        // Get all ip's
+        List<String> keys = userlog.getKeys("users");
+        // Check if there are any keys
+        if (keys == null) {
+            return null;
         }
+        // Create the return list
+        ArrayList<String> usernamelist = new ArrayList<String>();
+
+        String lastUsername = null;
+        long lastDate = 0;
+        long date = 0;
+
+        int endindex = 0;
+        // Loops trough all logged users
+        for (String username : keys) {
+            // Gets the ips logged for the current user
+            List<String> ipList = userlog.getKeys("users." + username + ".ip");
+            // Check if there are ip's
+            if (ipList == null) {
+                continue;
+            }
+            date = Long.parseLong(userlog.getString("users." + username + ".ip." + ip, "0"));
+            if (date > lastDate) {
+                lastDate = date;
+                lastUsername = username;
+            }
+        }
+        // Return the list
+        return lastUsername;
     }
 }

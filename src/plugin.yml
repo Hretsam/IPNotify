@@ -1,6 +1,6 @@
 name: IPNotify
 main: me.hretsam.ipnotify.IPNotify
-version: 1.0
+version: 1.3
 author: Hretsam (Yoharnu till 0.5 (IPGet))
 commands:
    ip:
@@ -22,3 +22,24 @@ commands:
    aipban:
     description: Bans the ip, and returns all associated names. If last banrelated is true, it will auto ban all names on the list.
     usage: /aipban <playername|ip> [banRelated]
+
+permissions:
+    ipnotify.all:
+        description: Gives the player acess to all nodes
+        children:
+            ipnotify.warning: op
+            ipnotify.self: op
+            ipnotify.other: op
+            ipnotify.aipban: op
+    ipnotify.warning:
+        description: The players with this node get warnings on players joining with double ip's
+        default: op
+    ipnotify.self:
+        description: Allows the player to see details about himself
+        default: op
+    ipnotify.other:
+        description: Allows the player to see details about others
+        default: op
+    ipnotify.aipban:
+        description: Allows the player to use the aipban command
+        default: op

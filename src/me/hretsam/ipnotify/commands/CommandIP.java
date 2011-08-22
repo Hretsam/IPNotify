@@ -1,6 +1,6 @@
 package me.hretsam.ipnotify.commands;
 
-import me.hretsam.ipnotify.FileHandler;
+import me.hretsam.ipnotify.data.FlatFileHandler;
 import me.hretsam.ipnotify.IPNotify;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,11 +21,11 @@ public class CommandIP implements IPCommand {
         // Check array length if there is an argument
         if (args.length == 0) {
             // Check permissions
-            if (parent.getPermissions().hasPermission(sender, parent.getConfig().getSelfnode())) {
+            if (parent.getPermissions().hasPermission(sender, IPNotify.getConfig().selfnode, "IPNotify.self")) {
                 // Check if the sender is a player or the server
                 if (sender instanceof Player) {
                     // Print a formatted ip address
-                    sender.sendMessage("Your IP address is: " + FileHandler.formatIP(((Player) sender).getAddress().toString()));
+                    sender.sendMessage("Your IP address is: " + FlatFileHandler.formatIP(((Player) sender).getAddress().toString()));
                 } else {
                     sender.sendMessage("You are the server! ");
                 }
@@ -41,9 +41,9 @@ public class CommandIP implements IPCommand {
                 return;
             }
             // Check for permissions
-            if (parent.getPermissions().hasPermission(sender, parent.getConfig().getOthernode())) {
+            if (parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
                 // Prints out ip
-                sender.sendMessage(targetPlayer.getName() + " IP address is: " + FileHandler.formatIP(targetPlayer.getAddress().toString()));
+                sender.sendMessage(targetPlayer.getName() + " IP address is: " + FlatFileHandler.formatIP(targetPlayer.getAddress().toString()));
             } else {
                 sender.sendMessage("You don't have Permission to do that");
             }

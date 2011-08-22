@@ -2,9 +2,9 @@ package me.hretsam.ipnotify;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 import com.nijiko.permissions.PermissionHandler;
-import org.bukkit.command.CommandSender;
 
 public class IPPermissionHandler {
 
@@ -13,6 +13,7 @@ public class IPPermissionHandler {
     public IPPermissionHandler(IPNotify plugin) {
         Plugin theYetiPermissions = plugin.getServer().getPluginManager().getPlugin("Permissions");
         if (theYetiPermissions != null) {
+            IPNotify.writelog("Found permissions plugin", false);
             permissions = ((com.nijikokun.bukkit.Permissions.Permissions) theYetiPermissions).getHandler();
         }
     }
@@ -25,7 +26,7 @@ public class IPPermissionHandler {
      * @param key
      * @return 
      */
-    public boolean hasPermission(CommandSender sender, String key) {
+    public boolean hasPermission(CommandSender sender, String key, String permission) {
         // Check if both are not null
         if (key == null && sender == null) {
             return false;
@@ -45,9 +46,12 @@ public class IPPermissionHandler {
                 return ((Player) sender).isOp();
             }
             // check permissions
-            if (permissions != null) {
-                // check permissions key
-                return permissions.has(((Player) sender), key);
+            if (key.equalsIgnoreCase("permissions")) {
+                if (permissions != null) {
+                    // check permissions key
+                    return permissions.has(((Player) sender), permission);
+                }
+                return ((Player) sender).hasPermission(permission) || ((Player) sender).hasPermission("ipnotify.all");
             }
             // No key found, return
             return false;

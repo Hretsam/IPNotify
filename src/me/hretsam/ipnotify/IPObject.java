@@ -10,21 +10,20 @@ import java.util.Date;
  */
 public class IPObject {
 
-    private String ip;
+    private String value;
     private Long date;
 
     /**
      * Constructor of IIP
      * ip underscores will be set to dots, if any
-     * @param ip
+     * @param value (IP or name)
      * @param date 
      */
-    public IPObject(String ip, Long date) {
-        if (ip.contains("_")) {
-            ip = ip.replaceAll("_", "\\.");
+    public IPObject(String value, Long date) {
+        if (value.matches("([0-9]{1,3}_){0,3}[0-9]{1,3}")) {
+            value = value.replaceAll("_", "\\.");
         }
-        this.ip = ip;
-
+        this.value = value;
         this.date = date;
     }
 
@@ -50,16 +49,17 @@ public class IPObject {
      * @return 
      */
     public String getDateString() {
-        DateFormat dateFormat = new SimpleDateFormat(IPNotify.getPlugin().getConfig().getDateSyntax());
+        DateFormat dateFormat = new SimpleDateFormat(IPNotify.getConfig().dateSyntax);
         return dateFormat.format(date);
     }
 
     /**
-     * Returns the IP
+     * Returns the value
+     * Van be IP or a name
      * @return 
      */
-    public String getIp() {
-        return ip;
+    public String getValue() {
+        return value;
     }
 
     /**
@@ -68,6 +68,16 @@ public class IPObject {
      */
     @Override
     public String toString() {
-        return ip + " '" + getDateString() + "'";
+        return value + " '" + getDateString() + "'";
+    }
+    
+    public int compare(IPObject o2) {
+        if (getDateLong() < o2.getDateLong()) {
+            return 1;
+        } else if (getDateLong() == o2.getDateLong()){
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

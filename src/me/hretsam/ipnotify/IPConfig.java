@@ -13,16 +13,21 @@ import org.bukkit.util.config.Configuration;
  */
 public class IPConfig {
 
-    private final String configfilename = "config.yml";
-    private String selfnode;
-    private String othernode;
-    private String warningnode;
-    private String aipbannode;
-    private String dateSyntax;
-    private boolean warnOnFirstJoin;
-    private int maxIpListSize;
+    public final String configfilename = "config.yml";
+    public String selfnode;
+    public String othernode;
+    public String warningnode;
+    public String aipbannode;
+    public String dateSyntax;
+    public WarnMode joinWarning;
+    public int maxIpListSize;
+    public String mysqllocation;
+    public String mysqldbname;
+    public String mysqlusername;
+    public String mysqlpassword;
+    public String source;
 
-    public IPConfig(File datafolder) throws IOException {
+    public IPConfig(IPNotify plugin, File datafolder) throws IOException {
         if (!datafolder.exists()) {
             datafolder.mkdirs();
         }
@@ -46,7 +51,7 @@ public class IPConfig {
                 IPNotify.writelog("Config file not found, created new file", false);
             } catch (IOException iex) {
                 IPNotify.writelog("Cannot create config file! " + iex.getMessage(), true);
-                IPNotify.getPlugin().getServer().getPluginManager().disablePlugin(IPNotify.getPlugin());
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
             }
         }
 
@@ -61,7 +66,7 @@ public class IPConfig {
      * This loads all values of the config file
      * @param config 
      */
-    private void setupConfig(Configuration config) {
+    public void setupConfig(Configuration config) {
 
         // Checks for the config version
         if (config.getInt("configversion", 0) < 2) {
@@ -76,41 +81,30 @@ public class IPConfig {
         warningnode = config.getString("warning node", "IPNotify.warning");
         aipbannode = config.getString("aipbannode", "IPNotify.aipban");
 
-        warnOnFirstJoin = config.getBoolean("warn on first join", true);
+        String warning = config.getString("warn on first join", "firstjoin");
+        if (warning.equalsIgnoreCase("always")){
+            joinWarning = WarnMode.ALWAYS;
+        } else if (warning.equalsIgnoreCase("off")){
+            joinWarning = WarnMode.OFF;
+        } else {
+            joinWarning = WarnMode.FIRSTJOIN;
+        }
 
         maxIpListSize = config.getInt("max iplist size", 6);
 
+        mysqldbname = config.getString("mysql.dbname", "ipnotify");
+        mysqllocation = config.getString("mysql.location", "ipnotify");
+        mysqlusername = config.getString("mysql.username", "ipnotify");
+        mysqlpassword = config.getString("mysql.password", "ipnotify");
+
+        source = config.getString("datasource", "flatfile");
+
     }
 
-    public String getConfigfilename() {
-        return configfilename;
-    }
+    public enum WarnMode {
 
-    public String getDateSyntax() {
-        return dateSyntax;
-    }
-
-    public String getOthernode() {
-        return othernode;
-    }
-
-    public String getSelfnode() {
-        return selfnode;
-    }
-
-    public String getWarningnode() {
-        return warningnode;
-    }
-
-    public boolean doWarnOnFirstJoin() {
-        return warnOnFirstJoin;
-    }
-
-    public int getMaxIpListSize() {
-        return maxIpListSize;
-    }
-
-    public String getAipbannode() {
-        return aipbannode;
+        FIRSTJOIN,
+        ALWAYS,
+        OFF;
     }
 }

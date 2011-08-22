@@ -1,5 +1,9 @@
-package me.hretsam.ipnotify;
+package me.hretsam.ipnotify.converter;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import me.hretsam.ipnotify.data.DataException;
+import me.hretsam.ipnotify.data.FlatFileHandler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,12 +14,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import me.hretsam.ipnotify.IPNotify;
+import me.hretsam.ipnotify.data.DataHandler;
 
 /**
  *
  * @author Hretsam
  */
-public class Converter {
+public class IPGetConverter {
 
     public static boolean hasOldFiles(File datafolder) {
         //Look for the old IPGet Folder!
@@ -26,7 +32,7 @@ public class Converter {
         return true;
     }
 
-    public static void convert(final File datafolder) {
+    public static void convert(final DataHandler handler, final File datafolder) {
         new Thread(new Runnable() {
 
             @Override
@@ -75,7 +81,7 @@ public class Converter {
                                 if (split.length != 2) {
                                     continue;
                                 }
-                                ip = FileHandler.formatIP(split[1]);
+                                ip = FlatFileHandler.formatIP(split[1]);
                                 split = split[0].split(":");
 
                                 datesplit = split[0].trim().split(" ");
@@ -89,8 +95,11 @@ public class Converter {
                                 } catch (ParseException ex) {
                                     IPNotify.writelog("Date Parse Error! " + ex.getMessage(), true);
                                 }
-
-                                IPNotify.getPlugin().getFilehandler().addIp(username, ip, date.getTime());
+                                try {
+                                    handler.addIp(username, ip, date.getTime());
+                                } catch (DataException ex) {
+                                    Logger.getLogger(IPGetConverter.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
                         } catch (IOException ex) {
                             IPNotify.writelog("IOException! " + ex.getMessage(), true);
