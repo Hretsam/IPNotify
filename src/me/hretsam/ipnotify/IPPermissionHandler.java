@@ -49,9 +49,9 @@ public class IPPermissionHandler {
             if (key.equalsIgnoreCase("permissions")) {
                 if (permissions != null) {
                     // check permissions key
-                    return permissions.has(((Player) sender), permission);
+                    return permissions.has(((Player) sender), permission.toLowerCase());
                 }
-                return ((Player) sender).hasPermission(permission) || ((Player) sender).hasPermission("ipnotify.all");
+                return ((Player) sender).hasPermission(permission.toLowerCase()) || ((Player) sender).hasPermission("ipnotify.all");
             }
             // No key found, return
             return false;
