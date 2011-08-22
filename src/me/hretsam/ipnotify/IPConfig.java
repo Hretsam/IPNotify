@@ -81,7 +81,7 @@ public class IPConfig {
         warningnode = config.getString("warning node", "IPNotify.warning");
         aipbannode = config.getString("aipbannode", "IPNotify.aipban");
 
-        String warning = config.getString("warn on first join", "firstjoin");
+        String warning = config.getString("warn double ip", "firstjoin");
         if (warning.equalsIgnoreCase("always")){
             joinWarning = WarnMode.ALWAYS;
         } else if (warning.equalsIgnoreCase("off")){

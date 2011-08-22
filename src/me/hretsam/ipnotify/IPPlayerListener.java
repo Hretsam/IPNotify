@@ -24,19 +24,18 @@ public class IPPlayerListener extends PlayerListener {
             // Get player
             Player player = event.getPlayer();
 
-            if (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS || IPNotify.getConfig().joinWarning == IPConfig.WarnMode.FIRSTJOIN) {
-
-                // Check if should do warning, and if player is new
-                if (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS
-                        || (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.FIRSTJOIN && !plugin.getDataHandler().isUserAlreadyLogged(player.getName()))) {
-                    // Get all connected players to the ip of the new user
-                    List<String> users = plugin.getDataHandler().getIpUserList(player.getAddress().toString());
-                    // If none (player itself not added yet) no warning
-                    if (users != null && users.size() > 0) {
-                        plugin.sendWarningMessage(ChatColor.RED + "[IPNotify] The IP of player " + player.getName() + " is used by " + users.size() + " other user(s)!");
-                    }
+            // Check if should do warning, and if player is new
+            if (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS
+                    || (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.FIRSTJOIN && !plugin.getDataHandler().isUserAlreadyLogged(player.getName()))) {
+                // Get all connected players to the ip of the new user
+                List<String> users = plugin.getDataHandler().getIpUserList(player.getAddress().toString());
+                // If none (player itself not added yet) no warning
+                if (users != null && users.size() > 0) {
+                    int size = (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS ? users.size() - 1 : users.size());
+                    plugin.sendWarningMessage(ChatColor.RED + "[IPNotify] The IP of player " + player.getName() + " is used by " + size + " other user" + (size > 1 ? "s" : "") + "!");
                 }
             }
+
 
             // Add player to log file
             plugin.getDataHandler().addIp(player.getName(), player.getAddress().toString(), new Date().getTime());
