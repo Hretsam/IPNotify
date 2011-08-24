@@ -27,19 +27,19 @@ permissions:
     ipnotify.all:
         description: Gives the player acess to all nodes
         children:
-            ipnotify.warning: op
-            ipnotify.self: op
-            ipnotify.other: op
-            ipnotify.aipban: op
+            ipnotify.warning: true
+            ipnotify.self: true
+            ipnotify.other: true
+            ipnotify.aipban: true
     ipnotify.warning:
         description: The players with this node get warnings on players joining with double ip's
-        default: op
+        default: false
     ipnotify.self:
         description: Allows the player to see details about himself
-        default: op
+        default: false
     ipnotify.other:
         description: Allows the player to see details about others
-        default: op
+        default: false
     ipnotify.aipban:
         description: Allows the player to use the aipban command
-        default: op
+        default: false
