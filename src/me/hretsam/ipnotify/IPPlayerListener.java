@@ -7,10 +7,12 @@ import java.util.logging.Logger;
 import me.hretsam.ipnotify.data.DataException;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 
-public class IPPlayerListener extends PlayerListener {
+public class IPPlayerListener implements Listener {
 
     public static IPNotify plugin;
 
@@ -18,20 +20,20 @@ public class IPPlayerListener extends PlayerListener {
         plugin = instance;
     }
 
-    @Override
+    @EventHandler (priority = EventPriority.LOW)
     public void onPlayerJoin(PlayerJoinEvent event) {
         try {
             // Get player
             Player player = event.getPlayer();
 
             // Check if should do warning, and if player is new
-            if (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS
-                    || (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.FIRSTJOIN && !plugin.getDataHandler().isUserAlreadyLogged(player.getName()))) {
+            if (IPNotify.getIPConfig().joinWarning == IPConfig.WarnMode.ALWAYS
+                    || (IPNotify.getIPConfig().joinWarning == IPConfig.WarnMode.FIRSTJOIN && !plugin.getDataHandler().isUserAlreadyLogged(player.getName()))) {
                 // Get all connected players to the ip of the new user
                 List<String> users = plugin.getDataHandler().getIpUserList(player.getAddress().toString());
                 // If none (player itself not added yet) no warning
                 if (users != null && users.size() > 0) {
-                    int size = (IPNotify.getConfig().joinWarning == IPConfig.WarnMode.ALWAYS ? users.size() - 1 : users.size());
+                    int size = (IPNotify.getIPConfig().joinWarning == IPConfig.WarnMode.ALWAYS ? users.size() - 1 : users.size());
                     plugin.sendWarningMessage(ChatColor.RED + "[IPNotify] The IP of player " + player.getName() + " is used by " + size + " other user" + (size > 1 ? "s" : "") + "!");
                 }
             }

@@ -26,7 +26,7 @@ public class CommandIpList implements IPCommand {
                     // Player doesn't exist
 
                     // Check for permissions
-                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                         sender.sendMessage("You don't have Permission to do that");
                         return;
                     }
@@ -35,7 +35,7 @@ public class CommandIpList implements IPCommand {
                     sender.sendMessage("*** Player not online ***");
 
                     // Get UserIplist with the users, where ignoring the case
-                    List<IPObject> iplist = parent.getDataHandler().getUserIplist(parent.getDataHandler().checkCaseIndependant(args[0]), IPNotify.getConfig().maxIpListSize);
+                    List<IPObject> iplist = parent.getDataHandler().getUserIplist(parent.getDataHandler().checkCaseIndependant(args[0]), IPNotify.getIPConfig().maxIpListSize);
                     // See if got results
                     if (iplist != null && iplist.size() > 0) {
                         // Got results, print
@@ -53,19 +53,19 @@ public class CommandIpList implements IPCommand {
                 // If the sender is a player, check if the name target is himself
                 if (sender instanceof Player
                         && (targetPlayer.getName().equalsIgnoreCase(((Player) sender).getName())
-                        && !parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.self"))) {
+                        && !parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.self"))) {
                     sender.sendMessage("You don't have Permission to do that");
                     return;
                 } else {
                     // Check if got permission (checks server to for future server permission adjustment)
-                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                         sender.sendMessage("You don't have Permission to do that");
                         return;
                     }
                 }
 
                 // Get list
-                List<IPObject> iplist = parent.getDataHandler().getUserIplist(targetPlayer.getName(), IPNotify.getConfig().maxIpListSize);
+                List<IPObject> iplist = parent.getDataHandler().getUserIplist(targetPlayer.getName(), IPNotify.getIPConfig().maxIpListSize);
 
                 // Print results, (dont need extra null check, as the player is logged in)
                 sender.sendMessage("Listing ip's which " + targetPlayer.getName() + " to login:");

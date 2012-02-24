@@ -18,7 +18,7 @@ public class CommandAIpBan implements IPCommand {
     @Override
     public void run(IPNotify parent, CommandSender sender, String command, String[] args) {
         try {
-            if (!parent.getPermissions().hasPermission(sender, parent.getConfig().aipbannode, "IPNotify.aipban")) {
+            if (!parent.getPermissions().hasPermission(sender, parent.getIPConfig().aipbannode, "IPNotify.aipban")) {
                 sender.sendMessage("You don't have Permission to do that");
                 return;
             }
@@ -47,21 +47,21 @@ public class CommandAIpBan implements IPCommand {
                 }
 
                 // Add ip to banlist
-                ((CraftServer) parent.getServer()).getHandle().c(ip);
+                ((CraftServer) parent.getServer()).getHandle().addIpBan(ip);
                 // gets a list of users with the given IP
                 List<String> userlist = parent.getDataHandler().getIpUserList(ip);
                 // There is atleast one, so no need for null check, print results
                 sender.sendMessage("IP '" + ip + "' added to banList.");
                 // Extra message
                 sender.sendMessage((banRelated ? "Banned related usernames!" : "Printing related usernames!"));
-                // String builder 
+                // String builder
                 StringBuilder sb = new StringBuilder();
                 // Loop trough all names in the list
                 for (String name : userlist) {
                     // Check if usernames should be banned as well
                     if (banRelated) {
                         // Add username to banlist
-                        ((CraftServer) parent.getServer()).getHandle().a(name);
+                        ((CraftServer) parent.getServer()).getHandle().addUserBan(name);
                     }
 
                     // Checks if there should be a , added

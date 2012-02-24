@@ -21,7 +21,7 @@ public class CommandIP implements IPCommand {
         // Check array length if there is an argument
         if (args.length == 0) {
             // Check permissions
-            if (parent.getPermissions().hasPermission(sender, IPNotify.getConfig().selfnode, "IPNotify.self")) {
+            if (parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().selfnode, "IPNotify.self")) {
                 // Check if the sender is a player or the server
                 if (sender instanceof Player) {
                     // Print a formatted ip address
@@ -41,7 +41,7 @@ public class CommandIP implements IPCommand {
                 return;
             }
             // Check for permissions
-            if (parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+            if (parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                 // Prints out ip
                 sender.sendMessage(targetPlayer.getName() + " IP address is: " + FlatFileHandler.formatIP(targetPlayer.getAddress().toString()));
             } else {

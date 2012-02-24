@@ -22,22 +22,21 @@ import me.hretsam.ipnotify.data.sql.SqlLiteSource;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.command.ColouredConsoleSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * IPNotify for Bukkit - Advanced IP logger
- * 
+ *
  * @author yoharnu & Hretsam
  */
 public class IPNotify extends JavaPlugin {
 
-    private final IPPlayerListener playerListener = new IPPlayerListener(this);
+    private final Listener playerListener = new IPPlayerListener(this);
     private IPPermissionHandler permissions;
     private DataHandler dataHandler;
     private IPConfig config;
@@ -59,7 +58,7 @@ public class IPNotify extends JavaPlugin {
         // Set plugin reference
         plugin = this;
         // Setup coloured console
-        console = new ColouredConsoleSender((CraftServer) getServer());
+        console = (ColouredConsoleSender) getServer().getConsoleSender();
 
         // Get the information from the yml file.
         PluginDescriptionFile pdfFile = this.getDescription();
@@ -68,8 +67,7 @@ public class IPNotify extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         // Register listeners
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Event.Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
+        pm.registerEvents(playerListener, this);
 
         // Start the permissions Handlers
         permissions = new IPPermissionHandler(this);
@@ -110,7 +108,7 @@ public class IPNotify extends JavaPlugin {
 
     /**
      * Returns the filehandler
-     * @return 
+     * @return
      */
     public DataHandler getDataHandler() {
         return dataHandler;
@@ -118,10 +116,11 @@ public class IPNotify extends JavaPlugin {
 
     /**
      * Returns the config
-     * @return 
+     * @return
      */
-    public static IPConfig getConfig() {
+    public static IPConfig getIPConfig() {
         return plugin.config;
+
     }
 
     /**
@@ -134,7 +133,7 @@ public class IPNotify extends JavaPlugin {
     /**
      * Writes a log message
      * @param message
-     * @param error 
+     * @param error
      */
     public static void writelog(String message, boolean error) {
         if (error) {
@@ -181,15 +180,15 @@ public class IPNotify extends JavaPlugin {
 
     /**
      * Prints message to server and all allowed players
-     * @param message 
+     * @param message
      */
     public void sendWarningMessage(String message) {
         // Check if message is not server log only
-        if (!getConfig().warningnode.equalsIgnoreCase("server")) {
+        if (!getIPConfig().warningnode.equalsIgnoreCase("server")) {
             // Get all connected players
             for (Player player : getServer().getOnlinePlayers()) {
                 // Check if they have permissions to get the warning
-                if (permissions.hasPermission(player, getConfig().warningnode, "IPNotify.warning")) {
+                if (permissions.hasPermission(player, getIPConfig().warningnode, "IPNotify.warning")) {
                     // Send warning
                     player.sendMessage(message);
                 }
