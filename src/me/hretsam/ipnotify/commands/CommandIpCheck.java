@@ -21,7 +21,7 @@ public class CommandIpCheck implements IPCommand {
             if (args.length == 0) {
 
                 // Check permissions
-                if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                     sender.sendMessage("You don't have Permission to do that");
                     return;
                 }
@@ -31,7 +31,7 @@ public class CommandIpCheck implements IPCommand {
                 // Send message
                 sender.sendMessage("Printing users that are indirectly banned!");
 
-                // String builder 
+                // String builder
                 StringBuilder sb = new StringBuilder();
                 // Loop trough all names in the list
                 for (String name : userlist) {

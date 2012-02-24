@@ -26,8 +26,8 @@ public class MysqlSource extends SqlSource {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             /** Open connection */
-            connection = DriverManager.getConnection("jdbc:mysql://" + IPNotify.getConfig().mysqllocation
-                    + "/" + IPNotify.getConfig().mysqldbname, IPNotify.getConfig().mysqlusername, IPNotify.getConfig().mysqlpassword);
+            connection = DriverManager.getConnection("jdbc:mysql://" + IPNotify.getIPConfig().mysqllocation
+                    + "/" + IPNotify.getIPConfig().mysqldbname, IPNotify.getIPConfig().mysqlusername, IPNotify.getIPConfig().mysqlpassword);
 
             IPNotify.writelog("Connected to database", false);
         } catch (ClassNotFoundException e) {

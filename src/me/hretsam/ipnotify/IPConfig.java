@@ -5,7 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  *
@@ -56,17 +57,21 @@ public class IPConfig {
         }
 
         // Loads the config file
-        Configuration config = new Configuration(configfile);
-        config.load();
+        YamlConfiguration config = new YamlConfiguration();
 
-        setupConfig(config);
+        try {
+            config.load(configfile);
+            setupConfig(config);
+        } catch (InvalidConfigurationException ex) {
+
+        }
     }
 
     /**
      * This loads all values of the config file
-     * @param config 
+     * @param config
      */
-    public void setupConfig(Configuration config) {
+    public void setupConfig(YamlConfiguration config) {
 
         // Checks for the config version
         if (config.getInt("configversion", 0) < 2) {
