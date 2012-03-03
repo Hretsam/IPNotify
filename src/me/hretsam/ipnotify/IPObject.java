@@ -17,7 +17,7 @@ public class IPObject {
      * Constructor of IIP
      * ip underscores will be set to dots, if any
      * @param value (IP or name)
-     * @param date 
+     * @param date
      */
     public IPObject(String value, Long date) {
         if (value.matches("([0-9]{1,3}_){0,3}[0-9]{1,3}")) {
@@ -29,7 +29,7 @@ public class IPObject {
 
     /**
      * Returns the data as a long
-     * @return 
+     * @return
      */
     public Long getDateLong() {
         return date;
@@ -37,7 +37,7 @@ public class IPObject {
 
     /**
      * Returns the data as a Date object
-     * @return 
+     * @return
      * @see Date
      */
     public Date getDate() {
@@ -46,17 +46,17 @@ public class IPObject {
 
     /**
      * Returns the data as a string
-     * @return 
+     * @return
      */
     public String getDateString() {
-        DateFormat dateFormat = new SimpleDateFormat(IPNotify.getConfig().dateSyntax);
+        DateFormat dateFormat = new SimpleDateFormat(IPNotify.getIPConfig().dateSyntax);
         return dateFormat.format(date);
     }
 
     /**
      * Returns the value
      * Van be IP or a name
-     * @return 
+     * @return
      */
     public String getValue() {
         return value;
@@ -64,13 +64,13 @@ public class IPObject {
 
     /**
      * Returns the ip with the date
-     * @return 
+     * @return
      */
     @Override
     public String toString() {
         return value + " '" + getDateString() + "'";
     }
-    
+
     public int compare(IPObject o2) {
         if (getDateLong() < o2.getDateLong()) {
             return 1;

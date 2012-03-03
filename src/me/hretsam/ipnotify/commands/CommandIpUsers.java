@@ -26,7 +26,7 @@ public class CommandIpUsers implements IPCommand {
                 // Check if argument contains an IP
                 if (args[0].contains(".")) {
                     // Check permissions
-                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                    if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                         sender.sendMessage("You don't have Permission to do that");
                         return;
                     }
@@ -42,7 +42,7 @@ public class CommandIpUsers implements IPCommand {
                     // See if player exists
                     if (targetPlayer == null) {
                         // Check permissions
-                        if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                        if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                             sender.sendMessage("You don't have Permission to do that");
                             return;
                         }
@@ -52,7 +52,7 @@ public class CommandIpUsers implements IPCommand {
                         sender.sendMessage("*** Player not online ***");
 
                         // Get list with ip's , where ignoring the case
-                        List<IPObject> iplist = parent.getDataHandler().getUserIplist(parent.getDataHandler().checkCaseIndependant(args[0]), IPNotify.getConfig().maxIpListSize);
+                        List<IPObject> iplist = parent.getDataHandler().getUserIplist(parent.getDataHandler().checkCaseIndependant(args[0]), IPNotify.getIPConfig().maxIpListSize);
                         // Check if list is not empty
                         if (iplist != null && iplist.size() > 0) {
                             // Loop trough all ip's
@@ -61,7 +61,7 @@ public class CommandIpUsers implements IPCommand {
                                 List<String> userlist = parent.getDataHandler().getIpUserList(ipp.getValue());
                                 // There is atleast one, so no need for null check, print results
                                 sender.sendMessage("Listing users with the ip '" + ipp.getValue() + "':");
-                                // String builder 
+                                // String builder
                                 StringBuilder sb = new StringBuilder();
                                 // Loop trough all names in the list
                                 for (String name : userlist) {
@@ -95,12 +95,12 @@ public class CommandIpUsers implements IPCommand {
                         // If the sender is a player, check if the name target is himself
                         if (sender instanceof Player
                                 && (targetPlayer.getName().equalsIgnoreCase(((Player) sender).getName())
-                                && !parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.self"))) {
+                                && !parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.self"))) {
                             sender.sendMessage("You don't have Permission to do that");
                             return;
                         } else {
                             // Check if got permission (checks server to for future server permission adjustment)
-                            if (!parent.getPermissions().hasPermission(sender, IPNotify.getConfig().othernode, "IPNotify.other")) {
+                            if (!parent.getPermissions().hasPermission(sender, IPNotify.getIPConfig().othernode, "IPNotify.other")) {
                                 sender.sendMessage("You don't have Permission to do that");
                                 return;
                             }
@@ -116,7 +116,7 @@ public class CommandIpUsers implements IPCommand {
                 // Will always have at least one (target itself) so no need for null check, Print results
                 sender.sendMessage("Listing users with the ip '" + ip + "':");
 
-                // String builder 
+                // String builder
                 StringBuilder sb = new StringBuilder();
                 // Loop trough all names in the list
                 for (String name : userlist) {
